@@ -2,8 +2,8 @@ const express = require('express');
 
 const router = express.Router();
 
-const feeRoute = require('./fee_route');
-const computeTransactionFeeRoute = require('./compute_transaction_fee_route');
+const feeRoute = require('./feeRoute');
+const computeTransactionFeeRoute = require('./computeTransactionFeeRoute');
 
 
 router.get('', (req, res) => res.send('Welcome to Lannister Pay'));
