@@ -1,0 +1,31 @@
+// Import env package
+require('dotenv').config({ silent: true, path: '.env' });
+
+module.exports = {
+  port: process.env.PORT,
+  nodeEnv: process.env.NODE_ENV,
+  jwtKey: process.env.JWT_KEY,
+  database: process.env.DB_NAME,
+  username: process.env.DB_USER,
+  password: process.env.DB_PWD,
+  host: process.env.DB_HOST,
+  testDatabase: process.env.TEST_DB_NAME,
+  testUserName: process.env.TEST_DB_USER,
+  testPassword: process.env.TEST_DB_PWD,
+  testHost: process.env.TEST_DB_HOST,
+  devDatabase: process.env.DEV_DB_NAME,
+  devUserName: process.env.DEV_DB_USER,
+  devPassword: process.env.DEV_DB_PWD,
+  devHost: process.env.DEV_DB_HOST,
+  cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+  apiKey: process.env.CLOUDINARY_API_KEY,
+  apiSecret: process.env.CLOUDINARY_API_SECRET,
+  sendgridApiKey: process.env.SENDGRID_API_KEY,
+  senderEmail: process.env.MAIL_FROM_ADDRESS,
+  senderName: process.env.MAIL_FROM_NAME,
+  bucketName: process.env.AWS_BUCKET_NAME,
+  region: process.env.AWS_BUCKET_REGION,
+  accessKeyId: process.env.AWS_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SECRET_KEY,
+  tesBusHostUrl: process.env.TES_BUS_WEB_HOST_URL,
+};
