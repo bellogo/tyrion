@@ -38,7 +38,7 @@ app.use(express.urlencoded({ extended: true }));
 const apiRoutes = require('./src/routes');
 
 // Set the default route
-app.use('/api/v1', cors(corsOptions), apiRoutes);
+app.use('/', cors(corsOptions), apiRoutes);
 
 // handle 404 error
 app.use((req, res, next) => {
