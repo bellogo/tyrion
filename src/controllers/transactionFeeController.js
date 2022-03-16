@@ -29,24 +29,18 @@ class TransactionFeesController {
           { fee_locale: '*'}
         ]})
       }
-      if (req.body.PaymentEntity.Type) {
         filterObject.$and.push({ $or: [
           { fee_entity: req.body.PaymentEntity.Type},
           { fee_entity: '*'}
-        ]})
-      }
-      if (req.body.PaymentEntity.Type) {
-        filterObject.$and.push({ $or: [
-          { fee_entity: req.body.PaymentEntity.Type},
-          { fee_entity: '*'}
-        ]})
-      }
-      if (req.body.PaymentEntity.Type) {
-        filterObject.$and.push({ $or: [
-          { entity_property: req.body.PaymentEntity.Type},
+        ]}) 
+          filterObject.$and.push({ $or: [
+          { entity_property: req.body.PaymentEntity.ID},
+          { entity_property: req.body.PaymentEntity.Issuer},
+          { entity_property: req.body.PaymentEntity.Brand},
+          { entity_property: req.body.PaymentEntity.Number},
+          { entity_property: req.body.PaymentEntity.SixID},
           { entity_property: '*'}
-        ]})
-      }
+        ]})      
         const docs = await this.mainRepo.getCollection(filterObject);
         res.send(docs)
       } catch (err) {
