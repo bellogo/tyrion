@@ -1,23 +1,21 @@
 /**
  *
  */
- require('../models/vote');
- const mongoose = require('mongoose');
- const BaseRepository = require('./baseRepository')
- 
- /**
+require('../models/feeConfigurationSpec')
+const mongoose = require('mongoose')
+const BaseRepository = require('./baseRepository')
+
+/**
   *
   */
- class FeeConfigurationSpecRepository extends BaseRepository {
-    constructor() {
-      super();
-      this.model = mongoose.model('FeeConfigurationSpec');
-    }
- 
- }
- 
- /**
+class FeeConfigurationSpecRepository extends BaseRepository {
+  constructor () {
+    super()
+    this.model = mongoose.model('FeeConfigurationSpec')
+  }
+}
+
+/**
   * Export as a module
   */
- module.exports = VoteRepository
- 
+module.exports = FeeConfigurationSpecRepository

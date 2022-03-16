@@ -1,6 +1,7 @@
 class BaseRepository {
-
-  model;
+    constructor(model) {
+        model;
+    }
 
   async create(data)
   {
