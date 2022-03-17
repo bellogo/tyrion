@@ -11,6 +11,6 @@ const transactionFeeController = new TransactionFeeController(new FeeConfigurati
 
 const router = express.Router()
 
-router.post('/', transactionFeeValidation, transactionFeeController.computeFee)
+router.post('/', transactionFeeController.computeFee)
 
 module.exports = router

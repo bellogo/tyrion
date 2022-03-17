@@ -26,11 +26,13 @@
     "eslint-plugin-promise": "^5.2.0"
   },
   "dependencies": {
+    "@node-redis/search": "^1.0.3",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
+    "joi": "^17.4.0",
     "mongoose": "^6.2.6",
     "nodemon": "^2.0.15",
-    "joi": "^17.4.0"
+    "redis": "^4.0.4"
   }
 }

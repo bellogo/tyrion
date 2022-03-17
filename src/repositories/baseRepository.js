@@ -66,7 +66,7 @@ class BaseRepository {
       return await this.model.find(filterObj)
           //.skip((pageVal - 1) * paginationVal)
           //.limit(paginationVal)
-          .sort({createdAt: -1})
+          .sort({fee_locale: -1, fee_entity: -1, entity_property: -1})
           .exec();
   }
 
