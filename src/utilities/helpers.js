@@ -5,21 +5,13 @@
 const config = require('../../config');
 
 exports.getModelledArrayOfFees = async (FeeConfigurationSpec) => {
-  const feeArray = FeeConfigurationSpec.split('\n')
+  const config = FeeConfigurationSpec.replace(/\*/g, 'all');
+  const feeArray = config.split('\n');
   let splited;
   let subSplit;
   const newFeeArray = await feeArray.map(fee => {
     splited = fee.split(' ')
     subSplit = splited[3].split('(');
-    if (splited[1] === '*') {
-      splited[1] = 'all'
-    }
-    if (splited[2] === '*') {
-      splited[2] = 'all'
-    }
-    if (subSplit[0] === '*') {
-      subSplit[0] = 'all'
-    }
     return { fee_id: splited[0], fee_currency: splited[1], fee_locale: splited[2], fee_entity: subSplit[0], entity_property: subSplit[1].slice(0, -1), fee_type: splited[6], fee_value: splited[7] }
   });
   return newFeeArray;

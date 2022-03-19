@@ -115,6 +115,7 @@ class TransactionFeesController {
         // FT.SEARCH cars "@country:korea @engine:(diesel|hybrid) @class:suv"
         const { CurrencyCountry, PaymentEntity, Currency} = req.body
         const {Country, ID, Issuer, Brand, SixID, Type} = PaymentEntity;
+        PaymentEntity.Number = PaymentEntity.Number.replace(/\*/g, "all");
         let fee_locale;
         if (Currency !== 'NGN') {
           return res.status(400).json({
@@ -127,7 +128,7 @@ class TransactionFeesController {
           fee_locale = 'LOCL';
         }
 
-  const results = await client.ft.search('idx:fees', `(@fee_locale:'all') | (@fee_locale:${fee_locale}) => { $weight: 5.0; } (@fee_entity:'all') | (@fee_entity:${Type}) => { $weight: 5.0; }`);
+  const results = await client.ft.search('idx:fees', `(@fee_locale:'all') | (@fee_locale:${fee_locale}) => { $weight: 5.0; } (@fee_entity:'all') | (@fee_entity:${Type}) => { $weight: 5.0; } (@entity_property:'all') | (@entity_property:${ID} | @entity_property:${Issuer} | @entity_property:${Brand} | @entity_property:${PaymentEntity.Number} | @entity_property:${SixID}) => { $weight: 5.0; }`);
 
   // results:
   // {
