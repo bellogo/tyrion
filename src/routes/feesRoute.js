@@ -12,7 +12,7 @@ const feeController = new FeeController(new FeeConfigurationSpecRepository());
 
 const router = express.Router();
 
-router.post('/', feesValidation, feeController.saveFees);
+router.post('/', feesValidation, feeController.trial);
 
 
 module.exports = router;

@@ -1,6 +1,11 @@
 const { getModelledArrayOfFees, responseCode, errorResponse } = require('../utilities/helpers');
-const client = require('../services/redis');
+const { SchemaFieldTypes, createClient } = require('redis');
+const { redisURL } = require('../../config')
+        const client = createClient({
+          url: redisURL
+        })
 
+  
 class TransactionFeesController {
   constructor(mainRepo) {
     this.mainRepo = mainRepo;
@@ -27,7 +32,8 @@ class TransactionFeesController {
         }
 
         const results = await client.ft.search('idx:fee', `@fee_locale:${fee_locale} @fee_entity:${PaymentEntity.Type} @entity_property:(${PaymentEntity.ID}|${PaymentEntity.Issuer}|${PaymentEntity.Brand}|${PaymentEntity.Number}|${PaymentEntity.SixID})`);
-        res.send(results);
+      res.send(results);
+
       //  const filterObject = {
       //   $and: []
       // }
@@ -98,6 +104,50 @@ class TransactionFeesController {
         console.log(err);
         return errorResponse(res, responseCode.INTERNAL_SERVER_ERROR, 'An error occurred.', err);
       }
+    }
+
+    first = async (req, res) => {
+      try {
+        
+        await client.connect();
+  const results = await client.ft.search('idx:animals', '@fee_currency:NGN');
+
+  // results:
+  // {
+  //   total: 2,
+  //   documents: [
+  //     { 
+  //       id: 'noderedis:animals:4',
+  //       value: {
+  //         name: 'Fido',
+  //         species: 'dog',
+  //         age: '7'
+  //       }
+  //     },
+  //     {
+  //       id: 'noderedis:animals:3',
+  //       value: {
+  //         name: 'Rover',
+  //         species: 'dog',
+  //         age: '9'
+  //       }
+  //     }
+  //   ]
+  // }
+ 
+  // console.log(`Results found: ${results.total}.`);
+
+  // for (const doc of results.documents) {
+  //   // noderedis:animals:4: Fido
+  //   // noderedis:animals:3: Rover
+  //   console.log(`${doc.id}: ${doc.value.name}`);
+  // }
+res.send(results)
+  await client.quit();
+} catch (error) {
+  
+}
+
     }
   
 }
