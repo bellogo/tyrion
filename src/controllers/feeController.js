@@ -3,10 +3,16 @@ const {
   responseCode,
   errorResponse,
 } = require('../utilities/helpers');
-const { SchemaFieldTypes, createClient } = require('redis');
+const redis = require('redis');
+
+const { SchemaFieldTypes, createClient } = redis;
 // import { createClient, SchemaFieldTypes } from 'redis';
 
-// const client = require('../services/redis');
+const { redisURL } = require('../../config');
+
+    const client = createClient({
+      url: redisURL,
+    });
 
 class FeeController {
   constructor(mainRepo) {
@@ -121,23 +127,28 @@ class FeeController {
   };
 
   trial = async (req, res) => {
-    const { redisURL } = require('../../config');
-
-    const client = createClient({
-      url: redisURL,
-    });
+    
     await client.connect();
+
+    client.flushAll('ASYNC', (err, success) => {
+      if (err) {
+        throw new Error(err);
+      }
+      if (success) {
+        console.log('success');
+      }
+      console.log('success'); // will be true if successfull
+    });
+
     try {
       await client.ft.create(
-        'idx:animals',
+        'idx:fees',
         {
           fee_id: {
-            type: SchemaFieldTypes.TAG,
-            sortable: true
+            type: SchemaFieldTypes.TEXT,
           },
           fee_currency: {
             type: SchemaFieldTypes.TEXT,
-            sortable: true
           },
           fee_locale: {
             type: SchemaFieldTypes.TEXT,
@@ -153,47 +164,66 @@ class FeeController {
           },
           fee_type: {
             type: SchemaFieldTypes.TEXT,
-            sortable: true
           },
           fee_value: {
             type: SchemaFieldTypes.TEXT,
-            sortable: true
           },
         },
         {
           ON: 'HASH',
-          PREFIX: 'noderedis:animals',
+          PREFIX: 'noderedis:fees',
         }
       );
     } catch (e) {
       if (e.message === 'Index already exists') {
         console.log('Index exists already, skipped creation.');
+        return res.status(200).json({
+          status: 'ok skp crt',
+        });
       } else {
         console.error(e);
-        process.exit(1);
       }
     }
-    await Promise.all([
-      client.hSet('noderedis:animals:1', {
-        fee_id: 'LNPY1221',
-        fee_currency: 'NGN',
-        fee_locale: '*',
-        fee_entity: '*',
-        entity_property: '*',
-        fee_type: 'PERC',
-        fee_value: '1.4'
-      }),
-      client.hSet('noderedis:animals:2', {
-        fee_id: 'LNPY1222',
-        fee_currency: 'NGN',
-        fee_locale: 'LOCL',
-        fee_entity: 'CREDIT-CARD',
-        entity_property: '*',
-        fee_type: 'FLAT_PERC',
-        fee_value: '50:1.4'
-      }),
+    const saveHashes = [];
+
+      const { FeeConfigurationSpec } = req.body;
+      const modelledFees = await getModelledArrayOfFees(FeeConfigurationSpec);
+      modelledFees.forEach((fee, index) => {
+        saveHashes.push(
+          client.hSet(`noderedis:fees:${index + 1}`, {
+            fee_id: fee.fee_id,
+            fee_currency: fee.fee_currency,
+            fee_locale: fee.fee_locale,
+            fee_entity: fee.fee_entity,
+            entity_property: fee.entity_property,
+            fee_type: fee.fee_type,
+            fee_value: fee.fee_value,
+          })
+        );
+      });
+      await Promise.all(saveHashes);
+    
+    // await Promise.all([
+    //   client.hSet('noderedis:fees:1', {
+    //     fee_id: 'LNPY1221',
+    //     fee_currency: 'NGN',
+    //     fee_locale: 'INTL',
+    //     fee_entity: '*',
+    //     entity_property: '*',
+    //     fee_type: 'PERC',
+    //     fee_value: '1.4'
+    //   }),
+    //   client.hSet('noderedis:animals:2', {
+    //     fee_id: 'LNPY1222',
+    //     fee_currency: 'NGN',
+    //     fee_locale: 'LOCL',
+    //     fee_entity: 'CREDIT-CARD',
+    //     entity_property: '*',
+    //     fee_type: 'FLAT_PERC',
+    //     fee_value: '50:1.4'
+    //   }),
       
-    ]);
+    // ]);
 
     // Perform a search query, find all the dogs...
     // Documentation: https://oss.redis.com/redisearch/Commands/#ftsearch

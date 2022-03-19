@@ -110,7 +110,24 @@ class TransactionFeesController {
       try {
         
         await client.connect();
-  const results = await client.ft.search('idx:animals', '@fee_currency:NGN');
+        const nais = 'NGN'
+        // FT.SEARCH books-idx "(@title:dogs | @title:cats) | (@title:dogs) => { $weight: 5.0; }"
+        // FT.SEARCH cars "@country:korea @engine:(diesel|hybrid) @class:suv"
+        const { CurrencyCountry, PaymentEntity, Currency} = req.body
+        const {Country, ID, Issuer, Brand, SixID, Type} = PaymentEntity;
+        let fee_locale;
+        if (Currency !== 'NGN') {
+          return res.status(400).json({
+            "Error": `No fee configuration for ${Currency} transactions.`
+          });
+        }
+        if (CurrencyCountry !== Country) {
+          fee_locale = 'INTL';
+        } else {
+          fee_locale = 'LOCL';
+        }
+
+  const results = await client.ft.search('idx:fees', `(@fee_locale:'all') | (@fee_locale:${fee_locale}) => { $weight: 5.0; } (@fee_entity:'all') | (@fee_entity:${Type}) => { $weight: 5.0; }`);
 
   // results:
   // {
@@ -145,7 +162,7 @@ class TransactionFeesController {
 res.send(results)
   await client.quit();
 } catch (error) {
-  
+  console.log(error);
 }
 
     }

@@ -6,12 +6,21 @@ const config = require('../../config');
 
 exports.getModelledArrayOfFees = async (FeeConfigurationSpec) => {
   const feeArray = FeeConfigurationSpec.split('\n')
-  let splited; 
+  let splited;
   let subSplit;
   const newFeeArray = await feeArray.map(fee => {
     splited = fee.split(' ')
     subSplit = splited[3].split('(');
-    return {fee_id: splited[0], fee_currency: splited[1], fee_locale: splited[2], fee_entity: subSplit[0], entity_property: subSplit[1].slice(0, -1), fee_type: splited[6], fee_value: splited[7] }
+    if (splited[1] === '*') {
+      splited[1] = 'all'
+    }
+    if (splited[2] === '*') {
+      splited[2] = 'all'
+    }
+    if (subSplit[0] === '*') {
+      subSplit[0] = 'all'
+    }
+    return { fee_id: splited[0], fee_currency: splited[1], fee_locale: splited[2], fee_entity: subSplit[0], entity_property: subSplit[1].slice(0, -1), fee_type: splited[6], fee_value: splited[7] }
   });
   return newFeeArray;
 }
@@ -32,9 +41,8 @@ exports.responseCode = {
   UNPROCESSABLE_ENTITY: 422,
   INTERNAL_SERVER_ERROR: 500,
   NOT_IMPLEMENTED: 501,
-  ACCOUNT_NOT_VERIFIED: 209,
+  ACCOUNT_NOT_VERIFIED: 209
 };
-
 
 /** *******************************
  *  Validator helper function
@@ -43,8 +51,8 @@ exports.middleware = (schema, property) => (request, response, next) => {
   const { error } = schema.validate(request[property], {
     abortEarly: false,
     language: {
-      key: '{{key}} ',
-    },
+      key: '{{key}} '
+    }
   });
   const valid = error == null;
   if (valid) {
@@ -68,7 +76,7 @@ exports.validateRequest = (object, res, next, schema) => {
 
   const options = {
     abortEarly: false, // include all errors
-    allowUnknown: false, // ignore unknown props
+    allowUnknown: false // ignore unknown props
     // stripUnknown: true, // remove unknown props
   };
   const { error, data } = schema.validate(object, options);
@@ -88,14 +96,13 @@ exports.validateRequest = (object, res, next, schema) => {
       this.responseCode.UNPROCESSABLE_ENTITY,
       'A validation error has occurred',
       FormattedError,
-      object.files,
+      object.files
     );
   }
   // req.body = req.body;
 
   return next();
 };
-
 
 /**
  *
@@ -105,16 +112,14 @@ exports.validateRequest = (object, res, next, schema) => {
  * @param {*} data
  * @returns {object} res
  */
- exports.successResponse = function (res, statusCode = this.responseCode.SUCCESS,
+exports.successResponse = function (res, statusCode = this.responseCode.SUCCESS,
   message = 'success', data = null) {
   res.status(statusCode).json({
     status: 'success',
     message,
-    data,
+    data
   });
 };
-
-
 
 /**
  *
@@ -127,11 +132,9 @@ exports.validateRequest = (object, res, next, schema) => {
  */
 exports.errorResponse = function (res, statusCode = this.responseCode.NOT_FOUND,
   message = 'error', errors = []) {
-    
   res.status(statusCode).json({
     status: 'error',
     message,
-    errors,
+    errors
   });
 };
-
