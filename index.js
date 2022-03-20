@@ -1,10 +1,9 @@
 const mongoose = require('mongoose');
 const { port, dbURL } = require('./config');
 const app = require('./app');
-require('./src/services/cache')
 
 // connect to DB and Start server
-mongoose.connect(dbURL, { useNewUrlParser: true, useUnifiedTopology: true, });
+mongoose.connect(dbURL, { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.Promise = global.Promise;
 
 mongoose.connection.once('open', () => {

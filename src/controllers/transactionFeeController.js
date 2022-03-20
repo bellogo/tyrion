@@ -1,4 +1,4 @@
-const { getAppliedFeeValue, getChargeAmount, getSettlementAmount, responseCode, errorResponse } = require('../utilities/helpers');
+const { getAppliedFeeValue, getChargeAmount, responseCode, errorResponse } = require('../utilities/helpers');
 
 class TransactionFeesController {
   constructor(mainRepo) {
@@ -55,20 +55,20 @@ class TransactionFeesController {
       const docs = await this.mainRepo.getCollection(filter);
       if (docs.length === 0) return errorResponse(res, responseCode.BAD_REQUEST, 'No fee configuration for this transaction.');
 
-    const appliedFeeValue = getAppliedFeeValue(docs[0], Amount);
-    const chargeAmount = getChargeAmount(appliedFeeValue, Amount, Customer);
-   
-    return res.status(200).json({
-      "AppliedFeeID": docs[0].fee_id,
-      "AppliedFeeValue": appliedFeeValue,
-      "ChargeAmount": chargeAmount,
-      "SettlementAmount": chargeAmount - appliedFeeValue
-  });
+      const appliedFeeValue = getAppliedFeeValue(docs[0], Amount);
+      const chargeAmount = getChargeAmount(appliedFeeValue, Amount, Customer);
+    
+      return res.status(200).json({
+        "AppliedFeeID": docs[0].fee_id,
+        "AppliedFeeValue": appliedFeeValue,
+        "ChargeAmount": chargeAmount,
+        "SettlementAmount": chargeAmount - appliedFeeValue
+    });
 
-  } catch (err) {
-    console.log(err);
-    return errorResponse(res, responseCode.INTERNAL_SERVER_ERROR, 'An error occurred.', err);
+    } catch (err) {
+      console.log(err);
+      return errorResponse(res, responseCode.INTERNAL_SERVER_ERROR, 'An error occurred.', err);
+    }
   }
-}
 }
 module.exports = TransactionFeesController;
