@@ -9,10 +9,8 @@ const FeeController = require('../controllers/feeController');
 const FeeConfigurationSpecRepository = require('../repositories/feeConfigurationSpecRepository');
 const feeController = new FeeController(new FeeConfigurationSpecRepository());
 
-
 const router = express.Router();
 
-router.post('/', feesValidation, feeController.trial);
-
+router.post('/', feesValidation, feeController.saveFees);
 
 module.exports = router;

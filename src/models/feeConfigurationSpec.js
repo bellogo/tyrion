@@ -22,7 +22,6 @@ const FeeConfigurationSpecSchema = new mongoose.Schema({
   },
   entity_property: {
     type: String,
-    required: true,
     index: true
   },
   fee_type: {
@@ -42,13 +41,6 @@ const FeeConfigurationSpecSchema = new mongoose.Schema({
     default: Date.now
   }
 }, { timestamps: true });
-
-// FeeConfigurationSpecSchema.method("toJSON", function () {
-//     const {__v, _id, ...object} = this.toObject();
-//     object.id = _id;
-//     delete object.deleted;
-//     return object;
-// });
 
 const FeeConfigurationSpecModel = mongoose.model('FeeConfigurationSpec', FeeConfigurationSpecSchema);
 

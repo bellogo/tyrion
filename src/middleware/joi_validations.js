@@ -39,9 +39,9 @@ module.exports = class Validations {
       PaymentEntity: Joi.object().keys({
         ID: Joi.number(),
         Issuer: Joi.string(),
-        Brand: Joi.string(),
+        Brand: Joi.any(),
         Number: Joi.string(),
-        SixID: Joi.number(),
+        SixID: Joi.any(),
         Type: Joi.string(),
         Country: Joi.string()
       })

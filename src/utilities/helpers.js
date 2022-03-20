@@ -1,12 +1,6 @@
-/**
- * import the configuration file
- */
-
-const config = require('../../config');
 
 exports.getModelledArrayOfFees = async (FeeConfigurationSpec) => {
-  const config = FeeConfigurationSpec.replace(/\*/g, 'all');
-  const feeArray = config.split('\n');
+  const feeArray = FeeConfigurationSpec.split('\n');
   let splited;
   let subSplit;
   const newFeeArray = await feeArray.map(fee => {
@@ -15,6 +9,30 @@ exports.getModelledArrayOfFees = async (FeeConfigurationSpec) => {
     return { fee_id: splited[0], fee_currency: splited[1], fee_locale: splited[2], fee_entity: subSplit[0], entity_property: subSplit[1].slice(0, -1), fee_type: splited[6], fee_value: splited[7] }
   });
   return newFeeArray;
+}
+
+exports.getChargeAmount = (aappliedFeeValue, Amount, Customer) => {
+  if (Customer.BearsFee === true) {
+    return Amount + aappliedFeeValue;
+  } else {
+    return Amount;
+  }
+}
+
+exports.getAppliedFeeValue = (feeConfig, Amount) => {
+  if (feeConfig.fee_type === 'FLAT_PERC') {
+    const feeValueArray = feeConfig.fee_value.split(':');
+    const flat = parseFloat(feeValueArray[0]);
+    const perc = parseFloat(feeValueArray[1]);
+    return Math.round(flat + ((perc / 100) * Amount))
+  }
+  const feeValue = parseFloat(feeConfig.fee_value)
+  if (feeConfig.fee_type === 'FLAT') {
+    return feeValue;
+  }
+  if (feeConfig.fee_type === 'PERC') {
+    return Math.round((feeValue / 100) * Amount)
+  }
 }
 
 /** *******************************
@@ -34,26 +52,6 @@ exports.responseCode = {
   INTERNAL_SERVER_ERROR: 500,
   NOT_IMPLEMENTED: 501,
   ACCOUNT_NOT_VERIFIED: 209
-};
-
-/** *******************************
- *  Validator helper function
- ********************************* */
-exports.middleware = (schema, property) => (request, response, next) => {
-  const { error } = schema.validate(request[property], {
-    abortEarly: false,
-    language: {
-      key: '{{key}} '
-    }
-  });
-  const valid = error == null;
-  if (valid) {
-    next();
-  } else {
-    const { details } = error;
-    const errors = details.map((i) => [i.message]);
-    this.errorResponse(response, this.responseCode.UNPROCESSABLE_ENTITY, 'Validation Error', errors);
-  }
 };
 
 /**
