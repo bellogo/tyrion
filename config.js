@@ -5,5 +5,5 @@ module.exports = {
   port: process.env.PORT,
   nodeEnv: process.env.NODE_ENV,
   dbURL: process.env.DB_URL,
-  redisURL: process.env.REDIS_URL
+  redisURL: process.env.REDISCLOUD_URL
 }
