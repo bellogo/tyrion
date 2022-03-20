@@ -1,4 +1,5 @@
 const { getModelledArrayOfFees, responseCode, errorResponse } = require('../utilities/helpers');
+const { clearHash } = require('../services/cache')
 
 class FeeController {
   constructor(mainRepo) {
@@ -15,14 +16,13 @@ class FeeController {
    */
     saveFees = async (req, res) => {
       try {
+        await clearHash('default');
         const { FeeConfigurationSpec } = req.body;
         const modelledFees = await getModelledArrayOfFees(FeeConfigurationSpec);
-          const saved = await this.mainRepo.createMany(modelledFees);
-          if(saved) return res.status(200).json({ "status": "ok" });
-        } catch (err) {
-        if (err.code === 11000) {// error code for duplicate FEE-ID after saving unique ones
-          return res.status(200).json({ "status": "ok" });
-        }
+        await this.mainRepo.deleteAllModels();
+        const saved = await this.mainRepo.createMany(modelledFees);
+        if(saved) return res.status(200).json({ "status": "ok" });
+      } catch (err) {
         console.log(err);
         return errorResponse(res, responseCode.INTERNAL_SERVER_ERROR, 'An error occurred.', err);
       }

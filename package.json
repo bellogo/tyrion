@@ -26,7 +26,6 @@
     "eslint-plugin-promise": "^5.2.0"
   },
   "dependencies": {
-    "@node-redis/search": "^1.0.3",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",

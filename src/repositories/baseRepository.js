@@ -1,6 +1,6 @@
 class BaseRepository {
   constructor (model) {
-    model;
+    this.model = model;
   }
 
   async create (data) {
@@ -79,6 +79,15 @@ class BaseRepository {
    */
   async deleteModel (id) {
     return this.model.findByIdAndDelete(id);
+  };
+
+  /**
+   * Delete a record
+   * @param id
+   * @returns {Promise<Query<Document | null, Document>>}
+   */
+  async deleteAllModels () {
+    return this.model.deleteMany({})
   };
 }
 

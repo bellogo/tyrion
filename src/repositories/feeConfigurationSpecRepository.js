@@ -16,7 +16,8 @@ class FeeConfigurationSpecRepository extends BaseRepository {
   async getCollection (filterObj = {}) {
     return await this.model.find(filterObj)
       .sort({ fee_locale: -1, fee_entity: -1, entity_property: -1 })
-      .exec();
+      .cache()
+      .exec()
   }
 }
 
