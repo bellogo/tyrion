@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const redis = require('redis');
 const { redisURL } = require('../../config');
-const client = redis.createClient({ url: redisURL });
+const client = redis.createClient(redisURL);
 
 (async () => {
   await client.connect();
