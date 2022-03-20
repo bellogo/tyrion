@@ -1,12 +1,16 @@
 const mongoose = require('mongoose');
 const redis = require('redis');
-const { redisURL } = require('../../config')
+const { redisURL } = require('../../config');
+const client = redis.createClient(redisURL);
 
-const client = redis.createClient(redisURL)
-client.connect();
+(async () => {
+  await client.connect();
+})();
+
 client.on('connect', function () {
   console.log('REDIS Connected!');
 });
+client.on('error', (err) => console.log('Redis Client Error', err));
 
 const exec = mongoose.Query.prototype.exec;
 
