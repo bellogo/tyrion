@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
 const redis = require('redis');
-const { redisURL } = require('../../config');
-const client = redis.createClient(redisURL);
+// const { redisURL } = require('../../config');
+
+const url = require('url');
+const redisURL = url.parse(process.env.REDISCLOUD_URL);
+const client = redis.createClient({ url: redisURL });
 
 (async () => {
   await client.connect();
