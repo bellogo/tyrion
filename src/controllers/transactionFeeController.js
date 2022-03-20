@@ -6,8 +6,7 @@ class TransactionFeesController {
   }
 
   /**
-   * save fee configurations
-   * 
+   * compute fee
    * @static
    * @param {*} req
    * @param {*} res

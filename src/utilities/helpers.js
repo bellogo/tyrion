@@ -1,4 +1,8 @@
-
+/**
+ * create a modelled object from inputed string
+ * @param {string} FeeConfigurationSpec
+ * @return {array of objects}
+ */
 exports.getModelledArrayOfFees = async (FeeConfigurationSpec) => {
   const feeArray = FeeConfigurationSpec.split('\n');
   let splited;
@@ -11,6 +15,13 @@ exports.getModelledArrayOfFees = async (FeeConfigurationSpec) => {
   return newFeeArray;
 }
 
+/**
+ * calculates charge amount
+ * @param {number} aappliedFeeValue
+ * @param {number} Amount
+ * @param {object} Customer
+ * @returns {number}
+ */
 exports.getChargeAmount = (aappliedFeeValue, Amount, Customer) => {
   if (Customer.BearsFee === true) {
     return Amount + aappliedFeeValue;
@@ -19,6 +30,12 @@ exports.getChargeAmount = (aappliedFeeValue, Amount, Customer) => {
   }
 }
 
+/**
+ * calculate applied fee value based on fee type
+ * @param {object} feeConfig
+ * @param {number} Amount
+ * @returns {number}
+ */
 exports.getAppliedFeeValue = (feeConfig, Amount) => {
   if (feeConfig.fee_type === 'FLAT_PERC') {
     const feeValueArray = feeConfig.fee_value.split(':');
